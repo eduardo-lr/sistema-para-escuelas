@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Sequence
 
 Base = declarative_base()
+engine = create_engine('sqlite:///escuela.db')
 
 class Alumno(Base):
     
