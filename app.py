@@ -17,3 +17,9 @@ class Alumno(Base):
         self.nombre = nombre
         self.app = app
         self.apm = apm
+
+    def __str__(self):
+        s = self.nombre + " " + self.app
+        if self.apm:
+            s += " " + self.apm
+        return s
