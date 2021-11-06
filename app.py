@@ -12,3 +12,8 @@ class Alumno(Base):
     nombre = Column(String,nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
+
+    def __init__(self, nombre, app, apm=None):
+        self.nombre = nombre
+        self.app = app
+        self.apm = apm
