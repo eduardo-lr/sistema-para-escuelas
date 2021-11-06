@@ -9,7 +9,7 @@ class Alumno(Base):
     __tablename__ = 'alumno'
     
     id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)
-    nombre = Column(String,nullable=False)
+    nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
 
@@ -23,3 +23,17 @@ class Alumno(Base):
         if self.apm:
             s += " " + self.apm
         return s
+
+class Curso(Base):
+
+    __tablename__ = 'curso'
+
+    id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
+    nombre = Column(String, nullable=False)
+
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def __str__(self):
+        return self.nombre
+
