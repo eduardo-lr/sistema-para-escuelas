@@ -8,4 +8,7 @@ class Alumno(Base):
     
     __tablename__ = 'alumno'
     
-    id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)   
+    id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)
+    nombre = Column(String,nullable=False)
+    app = Column(String, nullable=False)
+    apm = Column(String)
