@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Sequence
+from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
+from sqlalchemy.orm import relationship 
+import re
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -57,3 +59,15 @@ class Profesor(Base):
         if self.apm:
             s += " " + self.apm
         return s
+
+horarios = Table('horarios', Base.metadata,
+            Column('id_curso', ForeignKey('curso.id_curso'), primary_key=True),
+            Column('id_profesor', ForeignKey('profesor.id_profesor'), primary_key=True))
+
+class Horario(Base):
+
+    __tablename__ = 'horario'
+
+    id_horario = Column(Integer, Sequence('id_horario_sequence'), primary_key=True)
+    hora_final = Column(String, nullable=False)
+    hora_inicial = Column(String, nullable=False)
