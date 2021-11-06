@@ -7,6 +7,14 @@ import re
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
 
+class FormatoInvalido(Exception):
+    
+    def __init__(self, mensaje):
+        self.mensaje = mensaje
+
+    def __str__(self):
+        return self.mensaje
+
 class Alumno(Base):
     
     __tablename__ = 'alumno'
