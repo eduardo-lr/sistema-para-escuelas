@@ -80,26 +80,27 @@ class Horario(Base):
     hora_inicial = Column(String, nullable=False)
 
     def __init__(self, hora_inicial, hora_final):
-        pass
+        inicial = Hora(hora_inicial)
+        final = Hora(hora_final)
 
 class Hora:
 
     def __init__(self, string):
+        def _valida_hora(string):
+            import re
+            if not re.match('\d{1,2}:\d{2}', string):
+                raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
+            split_hora = string.split(":")
+            hora = int(split_hora[0])
+            minutos = int(split_hora[1])
+            if (hora > 24 or minutos > 59) or (hora == 24 and minutos != 0):
+                raise FormatoInvalido("Hora invalida")
+            return hora, minutos
+
         try:
             self.hora, self.minutos = _valida_hora(string)
         except FormatoInvalido as e:
             print(e)
-
-    def _valida_hora(string):
-        import re
-        if not re.match('\d{1,2}:\d{2}', string):
-            raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
-        split_hora = string.split(":")
-        hora = int(split_hora[0])
-        minutos = int(split_hora[1])
-        if (hora > 24 or minutos > 59) or (hora == 24 and minutos != 0):
-            raise FormatoInvalido("Hora invalida")
-        return hora, minutos
 
     def __le__(self, other):
         eq = self.hora == other.hora and self.minutos == other.minutos
