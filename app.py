@@ -178,5 +178,20 @@ Joseph = Profesor("Joseph", "Mupbala")
 session.add_all([Albert, Joseph])
 
 # Asignamos cursos a los profesores.
+h1 = Horario("12:00", "13:00")
+h1.curso, h1.dia = algebra, martes
+Albert.cursos.append(h1)
+
+h2 = Horario("5:00", "6:00")
+h1.curso, h1.dia = algebra, lunes
+Joseph.cursos.append(h1)
+
+h3 = Horario("11:30", "12:30")
+h3.curso, h3.dia = geometria, miercoles
+Joseph.cursos.append(h3)
+
+h4 = Horario("9:15", "10:15")
+h4.curso, h4.dia = economia, sabado
+Joseph.cursos.append(h4)
 
 session.close()
