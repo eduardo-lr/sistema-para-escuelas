@@ -162,4 +162,9 @@ session.add_all([
 	Cdia("Sábado"),
 	Cdia("Domingo")])
 
+# Agregamos algunos profesores.
+session.add_all([
+	Profesor("Albert", "Einstein"),
+	Profesor("Joseph", "Mupbala")])
+
 session.close()
