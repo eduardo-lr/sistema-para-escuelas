@@ -124,29 +124,15 @@ class Horario(Base):
 
 class Cdia(Base):
 
-	LUNES = "Lunes"
-	MARTES = "Martes"
-	MIERCOLES = "Miercoles"
-	JUEVES = "Jueves"
-	VIERNES = "Viernes"
-	SABADO = "Sabado"
-	DOMINGO = "Domingo"	
-
 	__tablename__ = 'cdia'
 	
 	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
 	dia = Column(String, nullable=False)
 	horarios = relationship('Horario', back_populates='dia')
 
-	def __new__(cls, *args, **kwargs):
-		print("Esta clase no puede ser instanciada")
-		return
-
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
-
-Horario("23f:00", "00:00")
 
 session.close()
