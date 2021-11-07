@@ -10,26 +10,6 @@ class FormatoInvalido(Exception): pass
 
 class HorarioInvalido(Exception): pass
 
-class Alumno(Base):
-    
-    __tablename__ = 'alumno'
-    
-    id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)
-    nombre = Column(String, nullable=False)
-    app = Column(String, nullable=False)
-    apm = Column(String)
-
-    def __init__(self, nombre, app, apm=None):
-        self.nombre = nombre
-        self.app = app
-        self.apm = apm
-
-    def __str__(self):
-        s = self.nombre + " " + self.app
-        if self.apm:
-            s += " " + self.apm
-        return s
-
 class Curso(Base):
 
     __tablename__ = 'curso'
@@ -44,6 +24,26 @@ class Curso(Base):
     def __str__(self):
         return self.nombre
 
+class Alumno(Base):
+    
+    __tablename__ = 'alumno'
+    
+    id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)
+    nombre = Column(String, nullable=False)
+    app = Column(String, nullable=False)
+    apm = Column(String)
+    id_curso = Column(Integer, ForeignKey('curso.id_curso'))
+
+    def __init__(self, nombre, app, apm=None):
+        self.nombre = nombre
+        self.app = app
+        self.apm = apm
+
+    def __str__(self):
+        s = self.nombre + " " + self.app
+        if self.apm:
+            s += " " + self.apm
+        return s
 
 class Profesor(Base):
     
