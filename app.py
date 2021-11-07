@@ -104,6 +104,8 @@ class Horario(Base):
     dia = Column(String, nullable=False)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
+    id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
+    dia = relationship('Cdia', back_populates='horarios')
 
     def __init__(self, hora_inicial, hora_final):
         inicial = Hora(hora_inicial)
@@ -130,6 +132,7 @@ class Cdia(Base):
 	
 	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
 	dia = Column(String, nullable=False)
+	horarios = relationship('Horario', back_populates='dia')
 
 	def __new__(cls, *args, **kwargs):
 		if cls is BaseClass:
