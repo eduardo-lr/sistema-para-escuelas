@@ -104,7 +104,6 @@ class Horario(Base):
     dia = Column(String, nullable=False)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
-    id_dia = Column(Integer)
 
     def __init__(self, hora_inicial, hora_final):
         inicial = Hora(hora_inicial)
