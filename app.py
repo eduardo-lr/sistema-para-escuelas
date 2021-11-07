@@ -106,10 +106,10 @@ class Horario(Base):
                 raise FormatoInvalido("Hora invalida")
             return hora, minutos
 
-    def __init__(self, hora_inicial, hora_final):	
+    def __init__(self, hora_inicial, hora_final):
+        inicial = self.Hora(hora_inicial)
+        final = self.Hora(hora_final)	
         try:
-            inicial = Hora(hora_inicial)
-            final = Hora(hora_final)
             self._verifica_horario(inicial, final)
         except HorarioInvalido as e:
             sys.exit(e)
