@@ -141,10 +141,15 @@ session = Session()
 # Ahora poblamos las bases de datos.
 # Agregamos primero algunos alumnos.
 session.add_all([
-	Alumno("Juan", "Dominguez", "Hernandez"),
+	Alumno("Juan", "Domínguez", "Hernández"),
 	Alumno("Diego Armando", "Sanchez", "Juarez"),
-	Alumno("Eduardo", "Rodriguez", "Perez"),
-	Alumno("Marco Antonio", "Juarez", "Borja")
-	])
+	Alumno("Eduardo", "Rodríguez", "Pérez"),
+	Alumno("Marco Antonio", "Juarez", "Borja")])
+
+# Agregamos algunos cursos.
+session.add_all([
+	Curso("Álgebra"),
+	Curso("Geometría"),
+	Curso("Economía")])
 
 session.close()
