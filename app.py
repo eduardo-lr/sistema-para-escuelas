@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
+import sys
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -71,21 +72,10 @@ class Profesor(Base):
 class Hora:
 
     def __init__(self, string):
-        def _valida_hora(string):
-            import re
-            if not re.fullmatch('\d{1,2}:\d{2}', string):
-                raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
-            split_hora = string.split(":")
-            hora = int(split_hora[0])
-            minutos = int(split_hora[1])
-            if hora >= 24 or minutos > 59:
-                raise FormatoInvalido("Hora invalida")
-            return hora, minutos
-
         try:
-            self.hora, self.minutos = _valida_hora(string)
+            self.hora, self.minutos = self._valida_hora(string)
         except FormatoInvalido as e:
-            print(e)
+            sys.exit(e)
 
     def __le__(self, other):
         eq = self.hora == other.hora and self.minutos == other.minutos
@@ -95,28 +85,42 @@ class Hora:
     def __str__(self):
         return str(self.hora) + ":" + str(self.minutos)
 
+    def _valida_hora(self, string):
+        import re
+        if not re.fullmatch('\d{1,2}:\d{2}', string):
+            raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
+        split_hora = string.split(":")
+        hora = int(split_hora[0])
+        minutos = int(split_hora[1])
+        if hora >= 24 or minutos > 59:
+            raise FormatoInvalido("Hora invalida")
+        return hora, minutos
+
 class Horario(Base):
 
     __tablename__ = 'horario'
 
     hora_final = Column(String, nullable=False)
     hora_inicial = Column(String, nullable=False)
-    dia = Column(String, nullable=False)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
     id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
     dia = relationship('Cdia', back_populates='horarios')
 
-    def __init__(self, hora_inicial, hora_final):
-        inicial = Hora(hora_inicial)
-        final = Hora(hora_final)
+    def __init__(self, hora_inicial, hora_final):	
         try:
-            if final <= inicial:
-                raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
+            inicial = Hora(hora_inicial)
+            final = Hora(hora_final)
+            self._verifica_horario(inicial, final)
         except HorarioInvalido as e:
-            print(e)
+            sys.exit(e)
+
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
+
+    def _verifica_horario(self, inicial, final):
+       if final <= inicial:
+            raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
 
 class Cdia(Base):
 
@@ -135,13 +139,14 @@ class Cdia(Base):
 	horarios = relationship('Horario', back_populates='dia')
 
 	def __new__(cls, *args, **kwargs):
-		if cls is BaseClass:
-			raise TypeError(f"only children of '{cls.__name__}' may be instantiated")
-		return object.__new__(cls, *args, **kwargs)
+		print("Esta clase no puede ser instanciada")
+		return
 
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
+
+Horario("23f:00", "00:00")
 
 session.close()
