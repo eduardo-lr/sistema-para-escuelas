@@ -152,4 +152,14 @@ session.add_all([
 	Curso("Geometría"),
 	Curso("Economía")])
 
+# Agregamos los dìas de la semana.
+session.add_all([
+	Cdia("Lunes"),
+	Cdia("Martes"),
+	Cdia("Miércoles"),
+	Cdia("Jueves"),
+	Cdia("Viernes"),
+	Cdia("Sábado"),
+	Cdia("Domingo")])
+
 session.close()
