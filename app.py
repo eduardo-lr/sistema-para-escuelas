@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
+from enum import Enum
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -116,6 +117,23 @@ class Horario(Base):
             print(e)
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
+
+class Cdia(Enum):
+
+	LUNES = "Lunes"
+	MARTES = "Martes"
+	MIERCOLES = "Miercoles"
+	JUEVES = "Jueves"
+	VIERNES = "Viernes"
+	SABADO = "Sabado"
+	DOMINGO = "Domingo"	
+
+	__tablename__ = 'cdia'
+	
+	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
+	dia = Column(String, nullable=False)
+
+	
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
