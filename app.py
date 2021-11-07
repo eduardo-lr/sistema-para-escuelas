@@ -139,32 +139,41 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 # Ahora poblamos las bases de datos.
-# Agregamos primero algunos alumnos.
-session.add_all([
-	Alumno("Juan", "Domínguez", "Hernández"),
-	Alumno("Diego Armando", "Sanchez", "Juarez"),
-	Alumno("Eduardo", "Rodríguez", "Pérez"),
-	Alumno("Marco Antonio", "Juarez", "Borja")])
+
+# Creamos primero algunos alumnos y los agregamos.
+Juan = Alumno("Juan", "Domínguez", "Hernández")
+Diego = Alumno("Diego Armando", "Sanchez", "Juarez")
+Eduardo = Alumno("Eduardo", "Rodríguez", "Pérez")
+Marco = Alumno("Marco Antonio", "Juarez", "Borja")
+session.add_all([Juan, Diego, Eduardo, Marco])
 
 # Agregamos algunos cursos.
-session.add_all([
-	Curso("Álgebra"),
-	Curso("Geometría"),
-	Curso("Economía")])
+algebra = Curso("Álgebra")
+geometria = Curso("Geometría")
+economia = Curso("Economía")
+session.add_all([algebra, geometria, economia])
+
+# Asignamos ahora algunos alumnos a los cursos
+Juan.curso = algebra
+Diego.curso = algebra
+Eduardo.curso = geometria
+Marco.curso = economia
 
 # Agregamos los dìas de la semana.
-session.add_all([
-	Cdia("Lunes"),
-	Cdia("Martes"),
-	Cdia("Miércoles"),
-	Cdia("Jueves"),
-	Cdia("Viernes"),
-	Cdia("Sábado"),
-	Cdia("Domingo")])
+lunes = Cdia("Lunes")
+martes = Cdia("Martes")
+miercoles = Cdia("Miércoles")
+jueves = Cdia("Jueves")
+viernes = Cdia("Viernes")
+sabado = Cdia("Sábado")
+domingo = Cdia("Domingo")
+session.add_all([lunes, martes, miercoles, jueves, viernes, sabado, domingo])
 
 # Agregamos algunos profesores.
-session.add_all([
-	Profesor("Albert", "Einstein"),
-	Profesor("Joseph", "Mupbala")])
+Albert = Profesor("Albert", "Einstein")
+Joseph = Profesor("Joseph", "Mupbala")
+session.add_all([Albert, Joseph])
+
+# Asignamos cursos a los profesores.
 
 session.close()
