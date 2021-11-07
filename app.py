@@ -10,19 +10,11 @@ class FormatoInvalido(Exception): pass
 
 class HorarioInvalido(Exception): pass
 
-class Curso(Base):
-
-    __tablename__ = 'curso'
-
-    id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
-    nombre = Column(String, nullable=False)
-    profesores = relationship('Profesor', secondary='horario')
-
-    def __init__(self, nombre):
-        self.nombre = nombre
-
-    def __str__(self):
-        return self.nombre
+def _nombre_toString(nombre, app, apm=None):
+    s = nombre + " " + app
+    if apm:
+        s += " " + apm
+    return s
 
 class Alumno(Base):
     
@@ -40,10 +32,21 @@ class Alumno(Base):
         self.apm = apm
 
     def __str__(self):
-        s = self.nombre + " " + self.app
-        if self.apm:
-            s += " " + self.apm
-        return s
+        return _nombre_toString(self.nombre, self.app, self.apm)
+
+class Curso(Base):
+
+    __tablename__ = 'curso'
+
+    id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
+    nombre = Column(String, nullable=False)
+    profesores = relationship('Profesor', secondary='horario')
+
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def __str__(self):
+        return self.nombre
 
 class Profesor(Base):
     
@@ -61,10 +64,7 @@ class Profesor(Base):
         self.apm = apm
 
     def __str__(self):
-        s = self.nombre + " " + self.app
-        if self.apm:
-            s += " " + self.apm
-        return s
+        return _nombre_toString(self.nombre, self.app, self.apm)
 
 class Horario(Base):
 
@@ -112,3 +112,5 @@ class Hora:
 
     def __str__(self):
         return str(self.hora) + ":" + str(self.minutos)
+
+Base.metadata.create_all(engine)
