@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
-#from enum import Enum
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
