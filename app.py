@@ -116,6 +116,31 @@ class Horario(Base):
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
 
+<<<<<<< HEAD
+=======
+class Cdia(Base):
+
+	LUNES = "Lunes"
+	MARTES = "Martes"
+	MIERCOLES = "Miercoles"
+	JUEVES = "Jueves"
+	VIERNES = "Viernes"
+	SABADO = "Sabado"
+	DOMINGO = "Domingo"	
+
+	__tablename__ = 'cdia'
+	
+	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
+	dia = Column(String, nullable=False)
+
+	def __new__(cls, *args, **kwargs):
+		if cls is BaseClass:
+			raise TypeError(f"only children of '{cls.__name__}' may be instantiated")
+		return object.__new__(cls, *args, **kwargs)
+
+	
+
+>>>>>>> catalogo_dias
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
