@@ -118,7 +118,7 @@ class Horario(Base):
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
 
-class Cdia(Enum):
+class Cdia(Base):
 
 	LUNES = "Lunes"
 	MARTES = "Martes"
@@ -132,6 +132,11 @@ class Cdia(Enum):
 	
 	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
 	dia = Column(String, nullable=False)
+
+	def __new__(cls, *args, **kwargs):
+		if cls is BaseClass:
+			raise TypeError(f"only children of '{cls.__name__}' may be instantiated")
+		return object.__new__(cls, *args, **kwargs)
 
 	
 
