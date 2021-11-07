@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
-from enum import Enum
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -102,8 +101,7 @@ class Horario(Base):
 
     hora_final = Column(String, nullable=False)
     hora_inicial = Column(String, nullable=False)
-    id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
-    cdia = relationship("Cdia", back_populates="horarios")
+    dia = Column(String, nullable=False)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
     id_dia = Column(Integer)
