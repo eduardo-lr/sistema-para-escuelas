@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, sessionmaker
 #from enum import Enum
 
 Base = declarative_base()
@@ -119,5 +119,6 @@ class Horario(Base):
         self.hora_final = str(final)
 
 Base.metadata.create_all(engine)
-
-alumno = Alumno("Juan Carlos", "Degollado")
+Session = sessionmaker(bind=engine)
+session = Session()
+session.close()
