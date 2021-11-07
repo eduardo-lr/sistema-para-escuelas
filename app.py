@@ -59,7 +59,7 @@ class Profesor(Base):
     nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
-    cursos = relationship('Curso', secondary='horario', back_populates='profores')
+    cursos = relationship('Curso', secondary='horario', back_populates='profesores')
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
@@ -119,3 +119,5 @@ class Horario(Base):
         self.hora_final = str(final)
 
 Base.metadata.create_all(engine)
+
+alumno = Alumno("Juan Carlos", "Degollado")
