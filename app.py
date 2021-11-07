@@ -102,7 +102,8 @@ class Horario(Base):
 
     hora_final = Column(String, nullable=False)
     hora_inicial = Column(String, nullable=False)
-    dia = Column(String, nullable=False)
+    id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
+    cdia = relationship("Cdia", back_populates="horarios")
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
     id_dia = Column(Integer)
@@ -118,24 +119,8 @@ class Horario(Base):
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
 
-class Cdia(Enum):
-
-	LUNES = "Lunes"
-	MARTES = "Martes"
-	MIERCOLES = "Miercoles"
-	JUEVES = "Jueves"
-	VIERNES = "Viernes"
-	SABADO = "Sabado"
-	DOMINGO = "Domingo"	
-
-	__tablename__ = 'cdia'
-	
-	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
-	dia = Column(String, nullable=False)
-
-	
-
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
+
 session.close()
