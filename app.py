@@ -138,4 +138,13 @@ metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
+# Ahora poblamos las bases de datos.
+# Agregamos primero algunos alumnos.
+session.add_all([
+	Alumno("Juan", "Dominguez", "Hernandez"),
+	Alumno("Diego Armando", "Sanchez", "Juarez"),
+	Alumno("Eduardo", "Rodriguez", "Perez"),
+	Alumno("Marco Antonio", "Juarez", "Borja")
+	])
+
 session.close()
