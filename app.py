@@ -4,9 +4,6 @@ from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
 import sys
 
-Base = declarative_base()
-engine = create_engine('sqlite:///escuela.db')
-
 class FormatoInvalido(Exception): pass
 
 class HorarioInvalido(Exception): pass
@@ -16,6 +13,8 @@ def _nombre_toString(nombre, app, apm=None):
     if apm:
         s += " " + apm
     return s
+
+Base = declarative_base()
 
 class Alumno(Base):
     
@@ -69,33 +68,6 @@ class Profesor(Base):
     def __str__(self):
         return _nombre_toString(self.nombre, self.app, self.apm)
 
-class Hora:
-
-    def __init__(self, string):
-        try:
-            self.hora, self.minutos = self._valida_hora(string)
-        except FormatoInvalido as e:
-            sys.exit(e)
-
-    def __le__(self, other):
-        eq = self.hora == other.hora and self.minutos == other.minutos
-        le = self.hora < other.hora or (self.hora == other.hora and self.minutos < other.minutos)
-        return eq or le
-
-    def __str__(self):
-        return str(self.hora) + ":" + str(self.minutos)
-
-    def _valida_hora(self, string):
-        import re
-        if not re.fullmatch('\d{1,2}:\d{2}', string):
-            raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
-        split_hora = string.split(":")
-        hora = int(split_hora[0])
-        minutos = int(split_hora[1])
-        if hora >= 24 or minutos > 59:
-            raise FormatoInvalido("Hora invalida")
-        return hora, minutos
-
 class Horario(Base):
 
     __tablename__ = 'horario'
@@ -106,6 +78,33 @@ class Horario(Base):
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
     id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
     dia = relationship('Cdia', back_populates='horarios')
+    
+    class Hora:
+
+        def __init__(self, string):
+            try:
+                self.hora, self.minutos = self._valida_hora(string)
+            except FormatoInvalido as e:
+                sys.exit(e)
+
+        def __le__(self, other):
+            eq = self.hora == other.hora and self.minutos == other.minutos
+            le = self.hora < other.hora or (self.hora == other.hora and self.minutos < other.minutos)
+            return eq or le
+
+        def __str__(self):
+            return str(self.hora) + ":" + str(self.minutos)
+
+        def _valida_hora(self, string):
+            import re
+            if not re.fullmatch('\d{1,2}:\d{2}', string):
+                raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
+            split_hora = string.split(":")
+            hora = int(split_hora[0])
+            minutos = int(split_hora[1])
+            if hora >= 24 or minutos > 59:
+                raise FormatoInvalido("Hora invalida")
+            return hora, minutos
 
     def __init__(self, hora_inicial, hora_final):	
         try:
@@ -133,7 +132,9 @@ class Cdia(Base):
 	def __init__(self, dia):
 		self.dia = dia
 
-Base.metadata.create_all(engine)
+engine = create_engine('sqlite:///escuela.db')
+metadata = Base.metadata
+metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
