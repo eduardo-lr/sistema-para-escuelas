@@ -127,9 +127,11 @@ class Cdia(Base):
 	__tablename__ = 'cdia'
 	
 	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
-	dia = Column(String, nullable=False)
+	dia = Column(String, nullable=False, unique=True)
 	horarios = relationship('Horario', back_populates='dia')
 
+	def __init__(self, dia):
+		self.dia = dia
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
