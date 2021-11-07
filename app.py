@@ -116,8 +116,6 @@ class Horario(Base):
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
 
-<<<<<<< HEAD
-=======
 class Cdia(Base):
 
 	LUNES = "Lunes"
@@ -138,9 +136,7 @@ class Cdia(Base):
 			raise TypeError(f"only children of '{cls.__name__}' may be instantiated")
 		return object.__new__(cls, *args, **kwargs)
 
-	
 
->>>>>>> catalogo_dias
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
