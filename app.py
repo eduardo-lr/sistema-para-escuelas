@@ -41,7 +41,7 @@ class Curso(Base):
 
     id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
     nombre = Column(String, nullable=False)
-    profesores = relationship('Profesor', secondary='horario', back_populates='cursos')
+    profesores = relationship('Horario', back_populates='curso')
     alumnos = relationship('Alumno', back_populates='curso')
 
     def __init__(self, nombre):
@@ -58,7 +58,7 @@ class Profesor(Base):
     nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
-    cursos = relationship('Curso', secondary='horario', back_populates='profesores')
+    cursos = relationship('Horario', back_populates='profesor')
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
@@ -79,6 +79,9 @@ class Horario(Base):
     id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
     dia = relationship('Cdia', back_populates='horarios')
     
+    profesor = relationship("Profesor", back_populates="cursos")
+    curso = relationship("Curso", back_populates="profesores")
+
     class Hora:
 
         def __init__(self, string):
