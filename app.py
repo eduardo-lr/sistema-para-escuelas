@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, backref
+from enum import Enum
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -66,26 +67,6 @@ class Profesor(Base):
     def __str__(self):
         return _nombre_toString(self.nombre, self.app, self.apm)
 
-class Horario(Base):
-
-    __tablename__ = 'horario'
-
-    hora_final = Column(String, nullable=False)
-    hora_inicial = Column(String, nullable=False)
-    id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
-    id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
-
-    def __init__(self, hora_inicial, hora_final):
-        inicial = Hora(hora_inicial)
-        final = Hora(hora_final)
-        try:
-            if final <= inicial:
-                raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
-        except HorarioInvalido as e:
-            print(e)
-        self.hora_inicial = str(inicial)
-        self.hora_final = str(final)
-
 class Hora:
 
     def __init__(self, string):
@@ -112,5 +93,27 @@ class Hora:
 
     def __str__(self):
         return str(self.hora) + ":" + str(self.minutos)
+
+class Horario(Base):
+
+    __tablename__ = 'horario'
+
+    hora_final = Column(String, nullable=False)
+    hora_inicial = Column(String, nullable=False)
+    dia = Column(String, nullable=False)
+    id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
+    id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
+    id_dia = Column(Integer)
+
+    def __init__(self, hora_inicial, hora_final):
+        inicial = Hora(hora_inicial)
+        final = Hora(hora_final)
+        try:
+            if final <= inicial:
+                raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
+        except HorarioInvalido as e:
+            print(e)
+        self.hora_inicial = str(inicial)
+        self.hora_final = str(final)
 
 Base.metadata.create_all(engine)
