@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
-from sqlalchemy.orm import relationship 
+from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -36,12 +36,14 @@ class Curso(Base):
 
     id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
     nombre = Column(String, nullable=False)
+    profesores = relationship('Profesor', secondary='horario')
 
     def __init__(self, nombre):
         self.nombre = nombre
 
     def __str__(self):
         return self.nombre
+
 
 class Profesor(Base):
     
@@ -51,6 +53,7 @@ class Profesor(Base):
     nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
+    cursos = relationship('Curso', secondary='horario')
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
@@ -63,17 +66,14 @@ class Profesor(Base):
             s += " " + self.apm
         return s
 
-horarios = Table('horarios', Base.metadata,
-            Column('id_curso', ForeignKey('curso.id_curso'), primary_key=True),
-            Column('id_profesor', ForeignKey('profesor.id_profesor'), primary_key=True))
-
 class Horario(Base):
 
     __tablename__ = 'horario'
 
-    id_horario = Column(Integer, Sequence('id_horario_sequence'), primary_key=True)
     hora_final = Column(String, nullable=False)
     hora_inicial = Column(String, nullable=False)
+    id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
+    id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
 
     def __init__(self, hora_inicial, hora_final):
         inicial = Hora(hora_inicial)
@@ -83,7 +83,8 @@ class Horario(Base):
                 raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
         except HorarioInvalido as e:
             print(e)
-
+        self.hora_inicial = str(inicial)
+        self.hora_final = str(final)
 
 class Hora:
 
@@ -111,5 +112,3 @@ class Hora:
 
     def __str__(self):
         return str(self.hora) + ":" + str(self.minutos)
-
-Horario('11:00', '13:30')
