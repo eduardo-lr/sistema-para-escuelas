@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, backref
-from enum import Enum
+#from enum import Enum
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -26,6 +26,7 @@ class Alumno(Base):
     app = Column(String, nullable=False)
     apm = Column(String)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'))
+    curso = relationship("Curso", back_populates="alumnos")
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
@@ -41,7 +42,8 @@ class Curso(Base):
 
     id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
     nombre = Column(String, nullable=False)
-    profesores = relationship('Profesor', secondary='horario')
+    profesores = relationship('Profesor', secondary='horario', back_populates='cursos')
+    alumnos = relationship('Alumno', back_populates='curso')
 
     def __init__(self, nombre):
         self.nombre = nombre
@@ -57,7 +59,7 @@ class Profesor(Base):
     nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
-    cursos = relationship('Curso', secondary='horario')
+    cursos = relationship('Curso', secondary='horario', back_populates='profores')
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
