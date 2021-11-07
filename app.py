@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship 
-import re
 
 Base = declarative_base()
 engine = create_engine('sqlite:///escuela.db')
@@ -79,3 +78,35 @@ class Horario(Base):
     id_horario = Column(Integer, Sequence('id_horario_sequence'), primary_key=True)
     hora_final = Column(String, nullable=False)
     hora_inicial = Column(String, nullable=False)
+
+    def __init__(self, hora_inicial, hora_final):
+        pass
+
+class Hora:
+
+    def __init__(self, string):
+        try:
+            self.hora, self.minutos = _valida_hora(string)
+        except FormatoInvalido as e:
+            print(e)
+
+    def _valida_hora(string):
+        import re
+        if not re.match('\d{1,2}:\d{2}', string):
+            raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
+        split_hora = string.split(":")
+        hora = int(split_hora[0])
+        minutos = int(split_hora[1])
+        if (hora > 24 or minutos > 59) or (hora == 24 and minutos != 0):
+            raise FormatoInvalido("Hora invalida")
+        return hora, minutos
+
+    def __le__(self, other):
+        eq = self.hora == other.hora and self.minutos == other.minutos
+        le = self.hora < other.hora or (self.hora == other.hora and self.minutos < other.minutos)
+        return eq or le
+
+    def __str__(self):
+        return str(self.hora) + ":" + str(self.minutos)
+
+Horario('5:00', '00:01')
