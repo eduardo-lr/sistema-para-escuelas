@@ -25,7 +25,7 @@ class Alumno(Base):
     app = Column(String, nullable=False)
     apm = Column(String)
     id_curso = Column(Integer, ForeignKey('curso.id_curso'))
-    curso = relationship("Curso", back_populates="alumnos")
+    curso = relationship('Curso', back_populates='alumnos')
 
     def __init__(self, nombre, app, apm=None):
         self.nombre = nombre
