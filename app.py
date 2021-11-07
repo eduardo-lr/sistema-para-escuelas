@@ -55,7 +55,7 @@ class Profesor(Base):
     
     __tablename__ = 'profesor'
     
-    id_profesor = Column(Integer, Sequence('id_profesor'), primary_key=True)
+    id_profesor = Column(Integer, Sequence('id_profesor_sequence'), primary_key=True)
     nombre = Column(String, nullable=False)
     app = Column(String, nullable=False)
     apm = Column(String)
