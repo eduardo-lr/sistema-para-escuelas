@@ -5,31 +5,35 @@ from sqlalchemy.orm import relationship, sessionmaker
 import sys
 
 class Persona:
+    """ Clase para abstraer el comportamiento de alumnos y profesores.
+    """
 
     def __init__(self, nombre, app, apm=None):
+        """ Constructor de la clase Persona. La persona puede o no
+		    tener apellido materno. 
+        
+        Args:
+          nombre: El nombre de la persona
+          app: El apellido paterno de la persona
+          apm: El apellido materno de la persona. Por default es None.
+        """
+
         self.nombre = nombre
         self.app = app
         self.apm = apm
 
     def __str__(self):
-        return self._nombre_toString(self.nombre, self.app, self.apm)
-
-    def _nombre_toString(self, nombre, app, apm=None):
-        """ Convierte el nombre de una persona en una cadena. La persona puede o no
-		    tener apellido materno. 
-
-        Args:
-          nombre: El nombre de la persona.
-	      app: El apellido paterno de la persona.
-	      apm: El apeellido materno de la persona. Por default es None.
+        """ Convierte el nombre de una persona en una cadena. 
 
         Returns:
           s: Una cadena con el nombre de la persona.
         """
-        s = nombre + " " + app
-        if apm:
-            s += " " + apm
+
+        s = self.nombre + " " + self.app
+        if self.apm:
+            s += " " + self.apm
         return s
+        
 
 Base = declarative_base()
 
@@ -97,9 +101,10 @@ class Horario(Base):
 
     class Hora:
 
-        class FormatoInvalido(Exception): pass
-        """ Clase para implementar excepciones en el formato con el que el usuario ingresa una hora.
-        """
+        class FormatoInvalido(Exception): 
+            """ Clase para implementar excepciones en el formato con el que el usuario ingresa una hora.
+            """
+            pass
 
         def __init__(self, string):
             try:
@@ -132,9 +137,10 @@ class Horario(Base):
                 raise FormatoInvalido("Hora invalida")
             return hora, minutos
 
-    class HorarioInvalido(Exception): pass
-    """ Clase para implementar excepciones cuando la hora de inicio es mayor o igual que la final.
-    """
+    class HorarioInvalido(Exception):
+        """ Clase para implementar excepciones cuando la hora de inicio es mayor o igual que la final.
+        """
+        pass
 
     def __init__(self, hora_inicial, hora_final):
         inicial = self.Hora(hora_inicial)
