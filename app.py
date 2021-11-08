@@ -226,15 +226,18 @@ def exportaInscritos():
 
 def exportaHorarioProfesores():
 	s = "{\n"
-	query = session.query(Profesor)
-	for profesor in query:		
+	profesores = session.query(Profesor)
+	for n, profesor in enumerate(profesores):		
 		s += "\t\"{}\": [".format(profesor.nombre)
 		for m, horario in enumerate(profesor.cursos):
 			s += "\"{}\"".format(str(horario))
 			if m != len(profesor.cursos) - 1:
 				s += ", "
 			else:
-				s += "],\n"
+				s += "]"
+				if n != len([x for x in profesores]) - 1:
+					s += ","
+				s+= "\n"
 	s += "}\n"		
 	return s
 
