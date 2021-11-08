@@ -96,7 +96,13 @@ class Horario(Base):
             return eq or le
 
         def __str__(self):
-            return str(self.hora) + ":" + str(self.minutos)
+            hora = str(self.hora)
+            minutos = str(self.minutos)
+            if len(hora) == 1:
+                hora = '0' + hora
+            if len(minutos) == 1:
+                minutos = minutos + '0'
+            return hora + ":" + minutos 
 
         def _valida_hora(self, string):
             import re
@@ -120,6 +126,9 @@ class Horario(Base):
         self.hora_inicial = str(inicial)
         self.hora_final = str(final)
 
+    def __str__(self):
+        return "{}, de las {} horas a las {} horas".format(self.dia, self.hora_inicial, self.hora_final) 
+
     def _verifica_horario(self, inicial, final):
        if final <= inicial:
             raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
@@ -135,6 +144,9 @@ class Cdia(Base):
 	def __init__(self, dia):
 		self.dia = dia
 
+	def __str__(self):
+		return self.dia
+
 engine = create_engine('sqlite:///escuela.db')
 metadata = Base.metadata
 metadata.create_all(engine)
@@ -144,11 +156,11 @@ session = Session()
 # Ahora poblamos las bases de datos.
 
 # Creamos primero algunos alumnos y los agregamos.
-Juan = Alumno("Juan", "Domínguez", "Hernández")
-Diego = Alumno("Diego Armando", "Sanchez", "Juarez")
+Otto = Alumno("Otto", "Webber")
+Diego = Alumno("Diego Armando", "Glagovsky")
 Eduardo = Alumno("Eduardo", "Rodríguez", "Pérez")
 Marco = Alumno("Marco Antonio", "Juarez", "Borja")
-session.add_all([Juan, Diego, Eduardo, Marco])
+session.add_all([Otto, Diego, Eduardo, Marco])
 
 # Agregamos algunos cursos.
 algebra = Curso("Álgebra")
@@ -157,7 +169,7 @@ economia = Curso("Economía")
 session.add_all([algebra, geometria, economia])
 
 # Asignamos ahora algunos alumnos a los cursos
-Juan.curso = algebra
+Otto.curso = algebra
 Diego.curso = algebra
 Eduardo.curso = geometria
 Marco.curso = economia
@@ -174,7 +186,7 @@ session.add_all([lunes, martes, miercoles, jueves, viernes, sabado, domingo])
 
 # Agregamos algunos profesores.
 Albert = Profesor("Albert", "Einstein")
-Joseph = Profesor("Joseph", "Mupbala")
+Joseph = Profesor("Joseph", "Mupbala", "Khan")
 session.add_all([Albert, Joseph])
 
 # Asignamos cursos a los profesores.
@@ -183,8 +195,8 @@ h1.curso, h1.dia = algebra, martes
 Albert.cursos.append(h1)
 
 h2 = Horario("5:00", "6:00")
-h1.curso, h1.dia = algebra, lunes
-Joseph.cursos.append(h1)
+h2.curso, h2.dia = algebra, lunes
+Joseph.cursos.append(h2)
 
 h3 = Horario("11:30", "12:30")
 h3.curso, h3.dia = geometria, miercoles
@@ -193,5 +205,22 @@ Joseph.cursos.append(h3)
 h4 = Horario("9:15", "10:15")
 h4.curso, h4.dia = economia, sabado
 Joseph.cursos.append(h4)
+
+# Hacemos algunas consultas.
+# Los alumnos inscritos en algebra.
+query = session.query(Alumno).where(Alumno.curso==algebra).all()
+for row in query:
+	print(row)
+
+# El horario de Joseph.
+query = session.query(Profesor).where(Profesor.nombre == Joseph.nombre).all()
+for row in query:
+	for curso in row.cursos:
+		print(curso)
+
+# El horario de algebra.
+query = session.query(Horario).where(Horario.curso == algebra).all()
+for row in query:
+	print(row)
 
 session.close()
