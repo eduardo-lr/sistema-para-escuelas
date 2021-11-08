@@ -17,7 +17,6 @@ class Persona:
           app: El apellido paterno de la persona
           apm: El apellido materno de la persona. Por default es None.
         """
-
         self.nombre = nombre
         self.app = app
         self.apm = apm
@@ -28,7 +27,6 @@ class Persona:
         Returns:
           s: Una cadena con el nombre de la persona.
         """
-
         s = self.nombre + " " + self.app
         if self.apm:
             s += " " + self.apm
@@ -66,7 +64,6 @@ class Alumno(Base, Persona):
           app: El apellido paterno de la persona
           apm: El apellido materno de la persona. Por default es None.
         """
-
         Persona.__init__(self, nombre, app, apm)
 
     def __str__(self):
@@ -103,7 +100,6 @@ class Profesor(Base, Persona):
           app: El apellido paterno de la persona
           apm: El apellido materno de la persona. Por default es None.
         """
-
         Persona.__init__(self, nombre, app, apm)
 
     def __str__(self):
@@ -115,35 +111,61 @@ class Profesor(Base, Persona):
         return Persona.__str__(self)
 
 class Curso(Base):
+    """ Clase para modelar cursos. La clase extiende a Base.
+    """    
 
+    " El nombre de la tabla en el ORM."
     __tablename__ = 'curso'
-
+    " El id del profesor. La columna es llave primaria y autoincrementable."   
     id_curso = Column(Integer, Sequence('id_curso_sequence'), primary_key=True)
+    " El nombre del curso. La columna no admite valores nulos"
     nombre = Column(String, nullable=False)
+    " Relación para vincular las clases Profesor y Curso, por medio de Horario"
     profesores = relationship('Horario', back_populates='curso')
+    " Relación para vincular las clases Alumno y Curso."
     alumnos = relationship('Alumno', back_populates='curso')
 
     def __init__(self, nombre):
+        """ Constructor de la clase curso.
+
+        Args:
+          nombre: el nombre del curso.
+        """
         self.nombre = nombre
 
     def __str__(self):
+        """ Convierte el curso en una cadena. 
+
+        Returns:
+          Una cadena con el nombre del alumno.
+        """
         return self.nombre
 
 class Horario(Base):
-
+    """ Clase para modelar horarios. La clase extiende a Base.
+    """    
+    " El nombre de la tabla en el ORM."
     __tablename__ = 'horario'
-
+    " La hora final del horario. La columna no admite valores nulos."
     hora_final = Column(String, nullable=False)
+    " La hora inicial del horario. La columna no admite valores nulos."
     hora_inicial = Column(String, nullable=False)
+    " Llave foranea para referenciar el curso al cual está vinculado el horario."
     id_curso = Column(Integer, ForeignKey('curso.id_curso'), primary_key=True)
+    " Relacion para vincular las tablas curso y Profesor."
+    curso = relationship("Curso", back_populates="profesores")
+    " Llave foranea para referenciar el profesor al cual está vinculado el horario."
     id_profesor = Column(Integer, ForeignKey('profesor.id_profesor'), primary_key=True)
+    " Relacion para vincular las tablas Profesor y Curso."
+    profesor = relationship("Profesor", back_populates="cursos")
+    " Llave foranea para refenciar el dia correspondiente al horario."  
     id_dia = Column(Integer, ForeignKey('cdia.id_dia'))
+    " Relacion para vincular las tablas Cdia y Horario." 
     dia = relationship('Cdia', back_populates='horarios')
     
-    profesor = relationship("Profesor", back_populates="cursos")
-    curso = relationship("Curso", back_populates="profesores")
-
     class Hora:
+        """ Clase interna para modelar objetos hora de la forma '00:00'
+        """
 
         class FormatoInvalido(Exception): 
             """ Clase para implementar excepciones en el formato con el que el usuario ingresa una hora.
@@ -151,17 +173,32 @@ class Horario(Base):
             pass
 
         def __init__(self, string):
+            """ Constructor de la clase Hora.
+
+            Args:
+              hora: La hora entre 0 y 23 del objeto Hora.
+              minutos: Los minutos entre 0 y 59 del objeto Hora.
+            """
             try:
                 self.hora, self.minutos = self._valida_hora(string)
             except FormatoInvalido as e:
                 sys.exit(e)
 
         def __le__(self, other):
+            """ Implementacion del operador de comparacion '<=' para objetos Hora.
+            Args:
+               other: El objeto hora con el cual comparar.
+            """
             eq = self.hora == other.hora and self.minutos == other.minutos
             le = self.hora < other.hora or (self.hora == other.hora and self.minutos < other.minutos)
             return eq or le
 
         def __str__(self):
+            """ Convierte el objeto Hora en una cadena. 
+
+            Returns:
+              Una representacion en cadena del objeto Hora.
+            """
             hora = str(self.hora)
             minutos = str(self.minutos)
             if len(hora) == 1:
@@ -171,6 +208,19 @@ class Horario(Base):
             return hora + ":" + minutos 
 
         def _valida_hora(self, string):
+            """ Método auxiliar para validar que la cadena a convertir en un objeto Hora
+                tenga un formato válido.
+
+            Args:
+              string: la cadena candidata a convertirse en un objeto Hora. 
+
+            Returns:
+              hora: Un entero entre 0 y 23 con la hora asociada al objeto Hora.
+              minutos: Un entero entre 0 y 59 con los minutos asociados al objeto Hora.
+
+            Raises:
+              FormatoInvalido: Si la cadena no es de la forma 00:00 o no es una hora válida.
+            """
             import re
             if not re.fullmatch('\d{1,2}:\d{2}', string):
                 raise FormatoInvalido("El formato de hora debe ser de 24 horas y de la forma 00:00")
@@ -187,6 +237,12 @@ class Horario(Base):
         pass
 
     def __init__(self, hora_inicial, hora_final):
+        """ Constructor de la clase Horario. la hora inicial debe ser menor a la hora final.
+
+        Args:
+          hora_inicial: una cadena de texto con la hora inicial.
+          hora_final: una cadena de texto con la hora final.
+        """
         inicial = self.Hora(hora_inicial)
         final = self.Hora(hora_final)	
         try:
@@ -198,13 +254,28 @@ class Horario(Base):
         self.hora_final = str(final)
 
     def __str__(self):
+        """ Regresa una representacion en cadena del Horario.
+
+        Returns: Una representación en cadena del objeto Horario.
+        """
         return "{}, de las {} horas a las {} horas".format(self.dia, self.hora_inicial, self.hora_final) 
 
     def _verifica_horario(self, inicial, final):
-       if final <= inicial:
+        """ Método auxiliar para validar que la hora inicial sea menor a la hora final.
+
+        Args:
+          inicial: un objeto Hora con la hora inicial.
+          final: un objeto Hora con la hora final.
+
+        Raises:
+          HorarioInvalido: si la hora inicial no es menor a la hora final.
+        """
+        if final <= inicial:
             raise HorarioInvalido("La hora final no puede ser menor o igual que la inicial")
 
 class Cdia(Base):
+	""" Catálogo para almacenar los dias de la semana
+	"""
 
 	__tablename__ = 'cdia'
 	
