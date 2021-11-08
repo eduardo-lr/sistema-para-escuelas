@@ -230,7 +230,7 @@ def exportaInscritos():
 		s += "\t\"{}\": [".format(curso.nombre)
 		query = session.query(Alumno).where(Alumno.curso==curso).all()
 		for n, alumno in enumerate(query):
-			s += str(alumno)
+			s += "\"{}\"".format(str(alumno))
 			if n != len(query) - 1:
 				s += ", "
 			else:
@@ -238,6 +238,18 @@ def exportaInscritos():
 	s += "}"		
 	print(s)
 
-exportaInscritos()
+def exportaHorarioProfesores():
+	s = "{\n"
+	query = session.query(Profesor)
+	for profesor in query:		
+		s += "\t\"{}\": [".format(profesor.nombre)
+		for n, horario in enumerate(profesor.cursos):
+			s += "\"{}\"".format(str(horario))
+			if n != len(profesor.cursos) - 1:
+				s += ", "
+			else:
+				s += "],\n"
+	s += "}"		
+	print(s)
 
 session.close()
