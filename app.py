@@ -206,23 +206,6 @@ h4 = Horario("9:15", "10:15")
 h4.curso, h4.dia = economia, sabado
 Joseph.cursos.append(h4)
 
-# Hacemos algunas consultas.
-# Los alumnos inscritos en algebra.
-#query = session.query(Alumno).where(Alumno.curso==algebra).all()
-#for row in query:
-#	print(row)
-
-# El horario de Joseph.
-#query = session.query(Profesor).where(Profesor.nombre == Joseph.nombre).all()
-#for row in query:
-#	for curso in row.cursos:
-#		print(curso)
-
-# El horario de algebra.
-#query = session.query(Horario).where(Horario.curso == algebra).all()
-#for row in query:
-#	print(row)
-
 def exportaInscritos():
 	s = "{\n"
 	query = session.query(Curso)
@@ -235,8 +218,8 @@ def exportaInscritos():
 				s += ", "
 			else:
 				s += "],\n"
-	s += "}"		
-	print(s)
+	s += "}\n"		
+	return s
 
 def exportaHorarioProfesores():
 	s = "{\n"
@@ -249,7 +232,22 @@ def exportaHorarioProfesores():
 				s += ", "
 			else:
 				s += "],\n"
-	s += "}"		
-	print(s)
+	s += "}\n"		
+	return s
+
+def exportaHorarioCurso():
+	s = "{\n"
+	query = session.query(Curso)
+	for curso in query:		
+		s += "\t\"{}\": [".format(curso.nombre)
+		query = session.query(Horario).where(Horario.curso == curso).all()
+		for n, horario in enumerate(query):
+			s += "\"{}\"".format(str(horario))
+			if n != len(query) - 1:
+				s += ", "
+			else:
+				s += "],\n"
+	s += "}\n"		
+	return s
 
 session.close()
