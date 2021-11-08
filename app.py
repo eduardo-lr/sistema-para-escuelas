@@ -166,7 +166,8 @@ session.add_all([Otto, Diego, Eduardo, Marco])
 algebra = Curso("Álgebra")
 geometria = Curso("Geometría")
 economia = Curso("Economía")
-session.add_all([algebra, geometria, economia])
+cursos = [algebra, geometria, economia]
+session.add_all(cursos)
 
 # Asignamos ahora algunos alumnos a los cursos
 Otto.curso = algebra
@@ -187,7 +188,8 @@ session.add_all([lunes, martes, miercoles, jueves, viernes, sabado, domingo])
 # Agregamos algunos profesores.
 Albert = Profesor("Albert", "Einstein")
 Joseph = Profesor("Joseph", "Mupbala", "Khan")
-session.add_all([Albert, Joseph])
+profesores = [Albert, Joseph]
+session.add_all(profesores)
 
 # Asignamos cursos a los profesores.
 h1 = Horario("12:00", "13:00")
@@ -208,19 +210,33 @@ Joseph.cursos.append(h4)
 
 # Hacemos algunas consultas.
 # Los alumnos inscritos en algebra.
-query = session.query(Alumno).where(Alumno.curso==algebra).all()
-for row in query:
-	print(row)
+#query = session.query(Alumno).where(Alumno.curso==algebra).all()
+#for row in query:
+#	print(row)
 
 # El horario de Joseph.
-query = session.query(Profesor).where(Profesor.nombre == Joseph.nombre).all()
-for row in query:
-	for curso in row.cursos:
-		print(curso)
+#query = session.query(Profesor).where(Profesor.nombre == Joseph.nombre).all()
+#for row in query:
+#	for curso in row.cursos:
+#		print(curso)
 
 # El horario de algebra.
-query = session.query(Horario).where(Horario.curso == algebra).all()
-for row in query:
-	print(row)
+#query = session.query(Horario).where(Horario.curso == algebra).all()
+#for row in query:
+#	print(row)
+
+def exportaInscritos():
+	s = "{\n"
+	for curso in cursos:		
+		s += "\t\"{}\": [".format(curso.nombre)
+		query = session.query(Alumno).where(Alumno.curso==curso).all()
+		for n, alumno in enumerate(query):
+			s += str(alumno)
+			if n != len(query) - 1:
+				s += ", "
+			else:
+				s += "],\n"
+	s += "}"		
+	print(s)
 
 session.close()
