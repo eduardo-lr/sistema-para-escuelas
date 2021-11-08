@@ -33,7 +33,7 @@ class Persona:
         return s
         
 
-# Creamos heredar e implementar el mapeo objeto relacion en SQLAlchemy
+# Creamos una clase para heredar e implementar el mapeo objeto relacion en SQLAlchemy
 Base = declarative_base()
 
 class Alumno(Base, Persona):
@@ -302,7 +302,7 @@ class Cdia(Base):
 		return self.dia
 
 # Creamos el motor de la base, en este caso en SQLite.
-engine = create_engine('sqlite:///escuela.db')
+engine = create_engine('sqlite:///:memory:')
 # Vinculamos los metadatos de la base con el motor.
 Base.metadata.create_all(engine)
 # Creamos un objeto Session.
