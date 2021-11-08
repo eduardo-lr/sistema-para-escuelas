@@ -431,5 +431,12 @@ def exportaHorarioCurso():
 	s += "}\n"		
 	return s
 
+# Los alumnos que pertenecen a los cursos.
+print(exportaInscritos())
+# El horario de cada profesor.
+print(exportaHorarioProfesores())
+# El horario de cad curso.
+print(exportaHorarioCurso())
+
 # Cerramos la sesion.
 session.close()
