@@ -277,16 +277,28 @@ class Cdia(Base):
 	""" Catálogo para almacenar los dias de la semana
 	"""
 
+	" El nombre de la tabla en el ORM."
 	__tablename__ = 'cdia'
-	
+	" El id del dìa. La columna es llave primaria y autoincrementable."
 	id_dia = Column(Integer, Sequence('id_dia_sequence'), primary_key=True)
+	" El dia de la semana. La columna no admite valores repetidos ni nulos."
 	dia = Column(String, nullable=False, unique=True)
+	" Relación para vincular las tablas Horario y Cdia."
 	horarios = relationship('Horario', back_populates='dia')
 
 	def __init__(self, dia):
+		""" Constructor de la clase Cdia.
+
+		Args:
+		  dia: cadena con el dia de la semana.
+		"""
 		self.dia = dia
 
 	def __str__(self):
+		""" Regresa una representacion en cadena del día.
+
+		Returns: Una representación en cadena del dia.
+		"""
 		return self.dia
 
 engine = create_engine('sqlite:///escuela.db')
