@@ -208,16 +208,19 @@ Joseph.cursos.append(h4)
 
 def exportaInscritos():
 	s = "{\n"
-	query = session.query(Curso)
-	for curso in query:		
+	cursos = session.query(Curso)
+	for n, curso in enumerate(cursos):		
 		s += "\t\"{}\": [".format(curso.nombre)
-		query = session.query(Alumno).where(Alumno.curso==curso).all()
-		for m, alumno in enumerate(query):
+		alumnos = session.query(Alumno).where(Alumno.curso==curso).all()
+		for m, alumno in enumerate(alumnos):
 			s += "\"{}\"".format(str(alumno))
-			if m != len(query) - 1:
+			if m != len(alumnos) - 1:
 				s += ", "
 			else:
-				s += "],\n"
+				s += "]"
+				if n != len([x for x in cursos]) - 1:
+					s += ","
+				s+= "\n"
 	s += "}\n"		
 	return s
 
@@ -237,8 +240,8 @@ def exportaHorarioProfesores():
 
 def exportaHorarioCurso():
 	s = "{\n"
-	query = session.query(Curso)
-	for curso in query:		
+	ext_query = session.query(Curso)
+	for curso in ext_query:		
 		s += "\t\"{}\": [".format(curso.nombre)
 		query = session.query(Horario).where(Horario.curso == curso).all()
 		for m, horario in enumerate(query):
