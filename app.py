@@ -35,23 +35,83 @@ class Persona:
         return s
         
 
+# Creamos heredar e implementar el mapeo objeto relacion en SQLAlchemy
 Base = declarative_base()
 
 class Alumno(Base, Persona):
-    
+    """ Clase para modelar alumnos. La clase extiende a Persona y Base.
+    """    
+
+    " El nombre de la tabla en el ORM."
     __tablename__ = 'alumno'
-    
+    " El id del alumno. La columna es llave primaria y autoincrementable."
     id_alumno = Column(Integer, Sequence('id_alumno_sequence'), primary_key=True)
+    " El nombre del alumno. La columna no admite valores nulos"
     nombre = Column(String, nullable=False)
+    " El apellido paterno del alumno. La columna no admite valores nulos."
     app = Column(String, nullable=False)
+    " El apellido materno del alumno."
     apm = Column(String)
+    " Llave foranea para referenciar el curso al cual se inscribe el alumno."
     id_curso = Column(Integer, ForeignKey('curso.id_curso'))
+    " Relación para vincular las clases Curso y Alumno."
     curso = relationship('Curso', back_populates='alumnos')
 
     def __init__(self, nombre, app, apm=None):
+        """ Constructor de la clase Alumno. Un alumno puede o no
+            tener apellido materno.
+
+        Args:
+          nombre: El nombre de la persona
+          app: El apellido paterno de la persona
+          apm: El apellido materno de la persona. Por default es None.
+        """
+
         Persona.__init__(self, nombre, app, apm)
 
     def __str__(self):
+        """ Convierte el nombre de un alumno en una cadena. 
+
+        Returns:
+          s: Una cadena con el nombre del alumno.
+        """
+        return Persona.__str__(self)
+
+class Profesor(Base, Persona):
+    """ Clase para modelar profesores. La clase extiende a Persona y Base.
+    """    
+
+    " El nombre de la tabla en el ORM."    
+    __tablename__ = 'profesor'
+    " El id del profesor. La columna es llave primaria y autoincrementable."    
+    id_profesor = Column(Integer, Sequence('id_profesor_sequence'), primary_key=True)
+    " El nombre del profesor. La columna no admite valores nulos"
+    nombre = Column(String, nullable=False)
+    " El apellido paterno del profesor. La columna no admite valores nulos."
+    app = Column(String, nullable=False)
+    " El apellido materno del profesor."
+    apm = Column(String)
+    " Relación para vincular las clases Curso y Profesor, por medio de Horario."
+    cursos = relationship('Horario', back_populates='profesor')
+
+    def __init__(self, nombre, app, apm=None):
+        """ Constructor de la clase Alumno. Un alumno puede o no
+            tener apellido materno.
+
+        Args:
+          nombre: El nombre de la persona
+          app: El apellido paterno de la persona
+          apm: El apellido materno de la persona. Por default es None.
+        """
+
+        Persona.__init__(self, nombre, app, apm)
+
+    def __str__(self):
+        """ Convierte el nombre de un alumno en una cadena. 
+
+        Returns:
+          s: Una cadena con el nombre del alumno.
+        """
         return Persona.__str__(self)
 
 class Curso(Base):
@@ -68,22 +128,6 @@ class Curso(Base):
 
     def __str__(self):
         return self.nombre
-
-class Profesor(Base, Persona):
-    
-    __tablename__ = 'profesor'
-    
-    id_profesor = Column(Integer, Sequence('id_profesor_sequence'), primary_key=True)
-    nombre = Column(String, nullable=False)
-    app = Column(String, nullable=False)
-    apm = Column(String)
-    cursos = relationship('Horario', back_populates='profesor')
-
-    def __init__(self, nombre, app, apm=None):
-        Persona.__init__(self, nombre, app, apm)
-
-    def __str__(self):
-        return Persona.__str__(self)
 
 class Horario(Base):
 
