@@ -208,7 +208,7 @@ Joseph.cursos.append(h4)
 
 def exportaInscritos():
 	s = "{\n"
-	cursos = session.query(Curso)
+	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
 		s += "\t\"{}\": [".format(curso.nombre)
 		alumnos = session.query(Alumno).where(Alumno.curso==curso).all()
@@ -218,7 +218,7 @@ def exportaInscritos():
 				s += ", "
 			else:
 				s += "]"
-				if n != len([x for x in cursos]) - 1:
+				if n != len(cursos) - 1:
 					s += ","
 				s+= "\n"
 	s += "}\n"		
@@ -226,7 +226,7 @@ def exportaInscritos():
 
 def exportaHorarioProfesores():
 	s = "{\n"
-	profesores = session.query(Profesor)
+	profesores = session.query(Profesor).all()
 	for n, profesor in enumerate(profesores):		
 		s += "\t\"{}\": [".format(profesor.nombre)
 		for m, horario in enumerate(profesor.cursos):
@@ -235,7 +235,7 @@ def exportaHorarioProfesores():
 				s += ", "
 			else:
 				s += "]"
-				if n != len([x for x in profesores]) - 1:
+				if n != len(profesores) - 1:
 					s += ","
 				s+= "\n"
 	s += "}\n"		
@@ -243,16 +243,19 @@ def exportaHorarioProfesores():
 
 def exportaHorarioCurso():
 	s = "{\n"
-	ext_query = session.query(Curso)
-	for curso in ext_query:		
+	cursos = session.query(Curso).all()
+	for n, curso in enumerate(cursos):		
 		s += "\t\"{}\": [".format(curso.nombre)
-		query = session.query(Horario).where(Horario.curso == curso).all()
-		for m, horario in enumerate(query):
+		horarios = session.query(Horario).where(Horario.curso == curso).all()
+		for m, horario in enumerate(horarios):
 			s += "\"{}\"".format(str(horario))
-			if m != len(query) - 1:
+			if m != len(horarios) - 1:
 				s += ", "
 			else:
-				s += "],\n"
+				s += "]"
+				if n != len(cursos) - 1:
+					s += ","
+				s+= "\n"
 	s += "}\n"		
 	return s
 
