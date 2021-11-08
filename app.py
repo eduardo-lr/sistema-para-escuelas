@@ -372,7 +372,7 @@ def exportaInscritos():
 	s = "{\n"
 	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
-		s += "\t\"{}\": [".format(curso.nombre)
+		s += "\t\"{}\": [".format(str(nombre))
 		alumnos = session.query(Alumno).where(Alumno.curso==curso).all()
 		for m, alumno in enumerate(alumnos):
 			s += "\"{}\"".format(str(alumno))
@@ -395,7 +395,7 @@ def exportaHorarioProfesores():
 	s = "{\n"
 	profesores = session.query(Profesor).all()
 	for n, profesor in enumerate(profesores):		
-		s += "\t\"{}\": [".format(profesor.nombre)
+		s += "\t\"{}\": [".format(str(profesor))
 		for m, horario in enumerate(profesor.cursos):
 			s += "\"{}\"".format(str(horario))
 			if m != len(profesor.cursos) - 1:
@@ -417,7 +417,7 @@ def exportaHorarioCurso():
 	s = "{\n"
 	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
-		s += "\t\"{}\": [".format(curso.nombre)
+		s += "\t\"{}\": [".format(str(curso))
 		horarios = session.query(Horario).where(Horario.curso == curso).all()
 		for m, horario in enumerate(horarios):
 			s += "\"{}\"".format(str(horario))
