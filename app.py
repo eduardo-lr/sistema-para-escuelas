@@ -4,10 +4,6 @@ from sqlalchemy import Table, Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship, sessionmaker
 import sys
 
-class FormatoInvalido(Exception): pass
-
-class HorarioInvalido(Exception): pass
-
 class Persona:
 
     def __init__(self, nombre, app, apm=None):
@@ -19,17 +15,16 @@ class Persona:
         return self._nombre_toString(self.nombre, self.app, self.apm)
 
     def _nombre_toString(self, nombre, app, apm=None):
-        """Convierte el nombre de una persona en una cadena. La persona puede o no
+        """ Convierte el nombre de una persona en una cadena. La persona puede o no
 		    tener apellido materno. 
 
         Args:
           nombre: El nombre de la persona.
 	      app: El apellido paterno de la persona.
-	      apm: El apeellido materno de la persona. Por default es None
+	      apm: El apeellido materno de la persona. Por default es None.
 
         Returns:
-          s: Una cadena con el nombre de la persona
-
+          s: Una cadena con el nombre de la persona.
         """
         s = nombre + " " + app
         if apm:
@@ -102,6 +97,10 @@ class Horario(Base):
 
     class Hora:
 
+        class FormatoInvalido(Exception): pass
+        """ Clase para implementar excepciones en el formato con el que el usuario ingresa una hora.
+        """
+
         def __init__(self, string):
             try:
                 self.hora, self.minutos = self._valida_hora(string)
@@ -132,6 +131,10 @@ class Horario(Base):
             if hora >= 24 or minutos > 59:
                 raise FormatoInvalido("Hora invalida")
             return hora, minutos
+
+    class HorarioInvalido(Exception): pass
+    """ Clase para implementar excepciones cuando la hora de inicio es mayor o igual que la final.
+    """
 
     def __init__(self, hora_inicial, hora_final):
         inicial = self.Hora(hora_inicial)
