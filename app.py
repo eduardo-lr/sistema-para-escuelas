@@ -8,27 +8,37 @@ class FormatoInvalido(Exception): pass
 
 class HorarioInvalido(Exception): pass
 
-def _nombre_toString(nombre, app, apm=None):
-    """Convierte el nombre de una persona en una cadena. La persona puede o no
-		tener apellido materno. 
+class Persona:
 
-    Args:
-      nombre: El nombre de la persona.
-	  app: El apellido paterno de la persona.
-	  apm: El apeellido materno de la persona. Por default es None
+    def __init__(self, nombre, app, apm=None):
+        self.nombre = nombre
+        self.app = app
+        self.apm = apm
 
-    Returns:
-      s: Una cadena con el nombre de la persona
+    def __str__(self):
+        return self._nombre_toString(self.nombre, self.app, self.apm)
 
-    """
-    s = nombre + " " + app
-    if apm:
-        s += " " + apm
-    return s
+    def _nombre_toString(self, nombre, app, apm=None):
+        """Convierte el nombre de una persona en una cadena. La persona puede o no
+		    tener apellido materno. 
+
+        Args:
+          nombre: El nombre de la persona.
+	      app: El apellido paterno de la persona.
+	      apm: El apeellido materno de la persona. Por default es None
+
+        Returns:
+          s: Una cadena con el nombre de la persona
+
+        """
+        s = nombre + " " + app
+        if apm:
+            s += " " + apm
+        return s
 
 Base = declarative_base()
 
-class Alumno(Base):
+class Alumno(Base, Persona):
     
     __tablename__ = 'alumno'
     
@@ -40,12 +50,10 @@ class Alumno(Base):
     curso = relationship('Curso', back_populates='alumnos')
 
     def __init__(self, nombre, app, apm=None):
-        self.nombre = nombre
-        self.app = app
-        self.apm = apm
+        Persona.__init__(self, nombre, app, apm)
 
     def __str__(self):
-        return _nombre_toString(self.nombre, self.app, self.apm)
+        return Persona.__str__(self)
 
 class Curso(Base):
 
@@ -62,7 +70,7 @@ class Curso(Base):
     def __str__(self):
         return self.nombre
 
-class Profesor(Base):
+class Profesor(Base, Persona):
     
     __tablename__ = 'profesor'
     
@@ -73,12 +81,10 @@ class Profesor(Base):
     cursos = relationship('Horario', back_populates='profesor')
 
     def __init__(self, nombre, app, apm=None):
-        self.nombre = nombre
-        self.app = app
-        self.apm = apm
+        Persona.__init__(self, nombre, app, apm)
 
     def __str__(self):
-        return _nombre_toString(self.nombre, self.app, self.apm)
+        return Persona.__str__(self)
 
 class Horario(Base):
 
@@ -270,5 +276,9 @@ def exportaHorarioCurso():
 				s+= "\n"
 	s += "}\n"		
 	return s
+
+print(exportaInscritos())
+print(exportaHorarioProfesores())
+print(exportaHorarioCurso())
 
 session.close()
