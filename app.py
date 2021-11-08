@@ -9,6 +9,18 @@ class FormatoInvalido(Exception): pass
 class HorarioInvalido(Exception): pass
 
 def _nombre_toString(nombre, app, apm=None):
+    """Convierte el nombre de una persona en una cadena. La persona puede o no
+		tener apellido materno. 
+
+    Args:
+      nombre: El nombre de la persona.
+	  app: El apellido paterno de la persona.
+	  apm: El apeellido materno de la persona. Por default es None
+
+    Returns:
+      s: Una cadena con el nombre de la persona
+
+    """
     s = nombre + " " + app
     if apm:
         s += " " + apm
@@ -258,9 +270,5 @@ def exportaHorarioCurso():
 				s+= "\n"
 	s += "}\n"		
 	return s
-
-print(exportaInscritos())
-print(exportaHorarioProfesores())
-print(exportaHorarioCurso())
 
 session.close()
