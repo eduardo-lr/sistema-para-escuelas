@@ -372,7 +372,7 @@ def exportaInscritos():
 	s = "{\n"
 	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
-		s += "\t\"{}\": [".format(str(nombre))
+		s += "\t\"{}\": [".format(str(curso))
 		alumnos = session.query(Alumno).where(Alumno.curso==curso).all()
 		for m, alumno in enumerate(alumnos):
 			s += "\"{}\"".format(str(alumno))
