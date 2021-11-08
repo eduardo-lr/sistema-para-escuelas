@@ -301,10 +301,13 @@ class Cdia(Base):
 		"""
 		return self.dia
 
+# Creamos el motor de la base, en este caso en SQLite.
 engine = create_engine('sqlite:///escuela.db')
-metadata = Base.metadata
-metadata.create_all(engine)
+# Vinculamos los metadatos de la base con el motor.
+Base.metadata.create_all(engine)
+# Creamos un objeto Session.
 Session = sessionmaker(bind=engine)
+# Creamos la sesión.
 session = Session()
 
 # Ahora poblamos las bases de datos.
@@ -361,6 +364,11 @@ h4.curso, h4.dia = economia, sabado
 Joseph.cursos.append(h4)
 
 def exportaInscritos():
+	""" Esta función devuelve en formato JSON los alumnos inscritos a cada curso.
+
+	Returns:
+	  s: un JSON con los alumnos inscritos a cada curso.
+	"""      
 	s = "{\n"
 	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
@@ -379,6 +387,11 @@ def exportaInscritos():
 	return s
 
 def exportaHorarioProfesores():
+	""" Esta función devuelve en formato JSON el horario de cada profesor.
+
+	Returns:
+	  s: un JSON con el horario de cada profesor.
+	"""      
 	s = "{\n"
 	profesores = session.query(Profesor).all()
 	for n, profesor in enumerate(profesores):		
@@ -396,6 +409,11 @@ def exportaHorarioProfesores():
 	return s
 
 def exportaHorarioCurso():
+	""" Esta función devuelve en formato JSON el horario de cada curso.
+
+	Returns:
+	  s: un JSON con el horario de cada curso.
+	"""      
 	s = "{\n"
 	cursos = session.query(Curso).all()
 	for n, curso in enumerate(cursos):		
@@ -413,8 +431,5 @@ def exportaHorarioCurso():
 	s += "}\n"		
 	return s
 
-print(exportaInscritos())
-print(exportaHorarioProfesores())
-print(exportaHorarioCurso())
-
+# Cerramos la sesion.
 session.close()
