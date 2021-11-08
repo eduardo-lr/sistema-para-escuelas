@@ -166,8 +166,7 @@ session.add_all([Otto, Diego, Eduardo, Marco])
 algebra = Curso("Álgebra")
 geometria = Curso("Geometría")
 economia = Curso("Economía")
-cursos = [algebra, geometria, economia]
-session.add_all(cursos)
+session.add_all([algebra, geometria, economia])
 
 # Asignamos ahora algunos alumnos a los cursos
 Otto.curso = algebra
@@ -188,8 +187,7 @@ session.add_all([lunes, martes, miercoles, jueves, viernes, sabado, domingo])
 # Agregamos algunos profesores.
 Albert = Profesor("Albert", "Einstein")
 Joseph = Profesor("Joseph", "Mupbala", "Khan")
-profesores = [Albert, Joseph]
-session.add_all(profesores)
+session.add_all([Albert, Joseph])
 
 # Asignamos cursos a los profesores.
 h1 = Horario("12:00", "13:00")
@@ -227,7 +225,8 @@ Joseph.cursos.append(h4)
 
 def exportaInscritos():
 	s = "{\n"
-	for curso in cursos:		
+	query = session.query(Curso)
+	for curso in query:		
 		s += "\t\"{}\": [".format(curso.nombre)
 		query = session.query(Alumno).where(Alumno.curso==curso).all()
 		for n, alumno in enumerate(query):
@@ -238,5 +237,7 @@ def exportaInscritos():
 				s += "],\n"
 	s += "}"		
 	print(s)
+
+exportaInscritos()
 
 session.close()
